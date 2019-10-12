@@ -93,23 +93,18 @@ public class MainActivity extends Activity {
                 if (position == menuIndex++) {
                     final ProgressDialog pd = ProgressDialog.show(MainActivity.this, "", "conectando......");
                     miband.connect(device, new ActionCallback() {
-
                         @Override
                         public void onSuccess(Object data) {
                             pd.dismiss();
                             miband.authenticate();
-                            Log.d(TAG,
-                                    "connected!!!");
-
+                            Log.d(TAG, "connected!!!");
                             miband.setDisconnectedListener(new NotifyListener() {
                                 @Override
                                 public void onNotify(byte[] data) {
-                                    Log.d(TAG,
-                                            "disconnected!!!");
+                                    Log.d(TAG, "disconnected!!!");
                                 }
                             });
                         }
-
                         @Override
                         public void onFail(int errorCode, String msg) {
                             pd.dismiss();
@@ -121,12 +116,10 @@ public class MainActivity extends Activity {
 
                 } else if (position == menuIndex++) {
                     miband.readRssi(new ActionCallback() {
-
                         @Override
                         public void onSuccess(Object data) {
                             Log.d(TAG, "rssi:" + (int) data);
                         }
-
                         @Override
                         public void onFail(int errorCode, String msg) {
                             Log.d(TAG, "readRssi fail");
@@ -134,7 +127,6 @@ public class MainActivity extends Activity {
                     });
                 } else if (position == menuIndex++) {
                     miband.getBatteryInfo(new ActionCallback() {
-
                         @Override
                         public void onSuccess(Object data) {
                             BatteryInfo info = (BatteryInfo) data;
@@ -150,9 +142,8 @@ public class MainActivity extends Activity {
                     //UserInfo userInfo = new UserInfo(20271234, 1, 32, 160, 40, "pablo", 0);
                     UserInfo userInfo = new UserInfo(20271234, 1, 32, 160, 40, "pablo", 1);
                     Log.d(TAG, "setUserInfo:" + userInfo.toString() + ",data:" + Arrays.toString(userInfo.getBytes(miband.getDevice().getAddress())));
-                    miband.setUserInfo(userInfo);
+                    miband.setUserInfo(userInfo,null);
                 } else if (position == menuIndex++) {
-
                     miband.setHeartRateScanListener(new HeartRateNotifyListener() {
                         @Override
                         public void onNotify(int heartRate) {
@@ -203,16 +194,13 @@ public class MainActivity extends Activity {
                         public void onNotify(byte[] data) {
                             ByteBuffer byteBuffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
                             int i = 0;
-
                             int index = (data[i++] & 0xFF) | (data[i++] & 0xFF) << 8;
                             int d1 = (data[i++] & 0xFF) | (data[i++] & 0xFF) << 8;
                             int d2 = (data[i++] & 0xFF) | (data[i++] & 0xFF) << 8;
                             int d3 = (data[i++] & 0xFF) | (data[i++] & 0xFF) << 8;
-
                             Message m = new Message();
                             m.what = Message_What_ShowLog;
                             m.obj = index + "," + d1 + "," + d2 + "," + d3;
-
                             handler.sendMessage(m);
                         }
                     });
@@ -222,12 +210,10 @@ public class MainActivity extends Activity {
                     miband.disableSensorDataNotify();
                 } else if (position == menuIndex++) {
                     miband.pair(new ActionCallback() {
-
                         @Override
                         public void onSuccess(Object data) {
                             Log.d(TAG, "pair succ");
                         }
-
                         @Override
                         public void onFail(int errorCode, String msg) {
                             Log.d(TAG, "pair fail");
@@ -236,6 +222,5 @@ public class MainActivity extends Activity {
                 }
             }
         });
-
     }
 }

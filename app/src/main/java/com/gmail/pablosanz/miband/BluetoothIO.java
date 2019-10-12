@@ -263,8 +263,10 @@ class BluetoothIO extends BluetoothGattCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         super.onCharacteristicChanged(gatt, characteristic);
-        if (this.notifyListeners.containsKey(characteristic.getUuid())) {
-            this.notifyListeners.get(characteristic.getUuid()).onNotify(characteristic.getValue());
+        if(characteristic!=null) {
+            if (this.notifyListeners.containsKey(characteristic.getUuid())) {
+                this.notifyListeners.get(characteristic.getUuid()).onNotify(characteristic.getValue());
+            }
         }
     }
 
@@ -298,11 +300,12 @@ class BluetoothIO extends BluetoothGattCallback {
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
         super.onDescriptorWrite(gatt, descriptor, status);
-        if (status==BluetoothGatt.GATT_SUCCESS) {
-            currentCallback.onSuccess(descriptor);
-        }
-        else {
-            currentCallback.onFail(-1,"error writing descriptor");
+        if(currentCallback!=null) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                currentCallback.onSuccess(descriptor);
+            } else {
+                currentCallback.onFail(-1, "error writing descriptor");
+            }
         }
     }
 
@@ -311,4 +314,8 @@ class BluetoothIO extends BluetoothGattCallback {
         super.onReliableWriteCompleted(gatt, status);
     }
 
+    public void writeDescriptor(BluetoothGattDescriptor descriptor,ActionCallback callback) {
+        currentCallback=callback;
+        gatt.writeDescriptor(descriptor);
+    }
 }
